@@ -14,7 +14,7 @@
     use Embryo\Error\ErrorHandlerInterface;
     use Embryo\Error\Traits\{ErrorFormatTrait, ErrorLogTrait};
     use Embryo\Http\Factory\ResponseFactory;
-    use Embryo\Http\Factory\Stream;
+    use Embryo\Http\Factory\StreamFactory;
     use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
     use Psr\Log\LoggerInterface;
 
@@ -96,8 +96,8 @@
                     if (stripos($accept, $type) !== false) {
                         
                         $output   = $this->{$method}($exception, $response->getReasonPhrase());
-                        $body     = 
-                        $response = $response->write($output);
+                        $body     = (new StreamFactory)->createStream($output);
+                        $response = $response->withBody($body);
                         return $response->withHeader('Content-Type', $type);
 
                     }
