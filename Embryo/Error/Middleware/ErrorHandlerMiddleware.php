@@ -11,8 +11,8 @@
      */
 
     namespace Embryo\Error\Middleware;
-
-    use Embryo\Error\{ErrorHandler, ErrorHandlerInterface};
+    
+    use Embryo\Error\{ErrorHandler, ErrorHandlerException, ErrorHandlerInterface};
     use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
     use Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface};
 
@@ -40,6 +40,7 @@
         public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface 
         {
             try {
+                set_error_handler([$this, 'handleErrorFunction']);
                 return $handler->handle($request);                
             } catch (\Throwable $exception) {
                 return $this->handleError($request, $exception);
@@ -55,5 +56,18 @@
         private function handleError(ServerRequestInterface $request, \Throwable $exception): ResponseInterface
         {
             return $this->errorHandler->process($request, $exception);
+        }
+
+        /**
+         * Error handling with set_error_handler().
+         *
+         * @param int $code
+         * @param string $message
+         * @param string $file
+         * @param string $line
+         * @throws ErrorHandlerException
+         */
+        public function handleErrorFunction($code, $message, $file, $line){
+            throw new ErrorHandlerException($message, 500, $file, $line);
         }
     }
