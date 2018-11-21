@@ -1,0 +1,34 @@
+{
+    "name": "davidecesarano/embryo-error",
+    "type": "library",
+    "description": "PSR-15 middleware to handle errors.",
+    "keywords": [
+        "php",
+        "psr-15",
+        "middleware",
+        "error"
+    ],
+    "homepage": "https://github.com/davidecesarano/embryo-error",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Davide Cesarano",
+            "homepage": "https://github.com/davidecesarano"
+        }
+    ],
+    "require": {
+        "php": ">=7.1"
+    },
+    "require-dev": {
+        "php": ">=7.1",
+        "davidecesarano/embryo-http": "dev-master",
+        "davidecesarano/embryo-middleware": "dev-master",
+        "davidecesarano/embryo-logger": "dev-master",
+        "davidecesarano/embryo-emitter": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Embryo\\": "Embryo/"
+        }
+    }
+}
