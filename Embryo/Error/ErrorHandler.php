@@ -12,26 +12,16 @@
     namespace Embryo\Error;
 
     use Embryo\Error\ErrorHandlerInterface;
-    use Embryo\Error\Traits\{ErrorFormatTrait, ErrorLogTrait};
-    use Embryo\Http\Factory\ResponseFactory;
-    use Embryo\Http\Factory\StreamFactory;
+    use Embryo\Error\Traits\{ContentTypeTrait, ErrorFormatTrait, ErrorLogTrait};
+    use Embryo\Http\Factory\{ResponseFactory, StreamFactory};
     use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
     use Psr\Log\LoggerInterface;
 
     class ErrorHandler implements ErrorHandlerInterface
     {   
+        use ContentTypeTrait;
         use ErrorFormatTrait;
         use ErrorLogTrait;
-
-        /**
-         * @var array
-         */
-        private $types = [
-            'plain' => ['text/plain', 'text/css', 'text/javascript'],
-            'html'  => ['text/html'],
-            'json'  => ['application/json'],
-            'xml'   => ['text/xml']
-        ];
 
         /**
          * @var bool $displayDetails
@@ -83,26 +73,30 @@
          */
         public function process(ServerRequestInterface $request, \Throwable $exception): ResponseInterface
         {
-            $code     = ($exception->getCode() === 0) ? 500 : $exception->getCode();
-            $response = (new ResponseFactory)->createResponse($code);
-            $accept   = $request->getHeaderLine('Accept');
+            $code        = ($exception->getCode() === 0) ? 500 : $exception->getCode();
+            $contentType = $this->getContentType($request);
 
             if ($this->logErrors) {
-                $this->log($request, $response, $exception);
+                $this->log($request, $code, $exception);
             }
 
-            foreach ($this->types as $method => $types) {
-                foreach ($types as $type) {
-                    if (stripos($accept, $type) !== false) {
-                        
-                        $output   = $this->{$method}($exception, $response->getReasonPhrase());
-                        $body     = (new StreamFactory)->createStream($output);
-                        $response = $response->withBody($body);
-                        return $response->withHeader('Content-Type', $type);
-
-                    }
-                }
+            switch ($contentType) {
+                case 'application/json':
+                    $output = $this->json($exception);
+                    break;
+                case 'text/xml':
+                case 'application/xml':
+                    $output = $this->xml($exception);
+                    break;
+                case 'text/html':
+                    $output = $this->html($exception);
+                    break;
+                default:
+                    throw new \UnexpectedValueException("Unknown content type $contentType");
             }
-            return $response;
+
+            $body = (new StreamFactory)->createStream($output);
+            $response = (new ResponseFactory)->createResponse($code);
+            return $response->withHeader('Content-type', $contentType)->withBody($body);
         }
     }
