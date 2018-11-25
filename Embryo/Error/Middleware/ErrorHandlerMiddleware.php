@@ -40,7 +40,7 @@
         public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface 
         {
             try {
-                set_error_handler([$this, 'handleErrorFunction']);
+                set_error_handler([$this, 'phpErrorHandler']);
                 return $handler->handle($request);                
             } catch (\Throwable $exception) {
                 return $this->handleError($request, $exception);
@@ -59,7 +59,7 @@
         }
 
         /**
-         * Error handling with set_error_handler().
+         * PHP Error handler used for set_error_handler().
          *
          * @param int $code
          * @param string $message
@@ -67,7 +67,7 @@
          * @param string $line
          * @throws ErrorHandlerException
          */
-        public function handleErrorFunction($code, $message, $file, $line){
+        public function phpErrorHandler($code, $message, $file, $line){
             throw new ErrorHandlerException($message, 500, $file, $line);
         }
     }
