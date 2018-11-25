@@ -11,7 +11,6 @@
     
     namespace Embryo\Error\Traits;
 
-    use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestInterface;
 
     trait ErrorLogTrait
@@ -23,11 +22,11 @@
          * otherwise it saves a critical error.
          *
          * @param ServerRequestInterface $request
-         * @param ResponseInterface $response
+         * @param int $code
          * @param Throwable $exception
          * @return void
          */
-        protected function log(ServerRequestInterface $request, ResponseInterface $response, \Throwable $exception)
+        protected function log(ServerRequestInterface $request, int $code, \Throwable $exception)
         {
             $message = sprintf('[{code}] [{method}] [{path}] %s: %s in %s on line %d',
                 get_class($exception),
@@ -36,7 +35,6 @@
                 $exception->getLine()
             );
             
-            $code   = $response->getStatusCode();
             $method = $request->getMethod();
             $path   = $request->getUri()->getPath();
             
