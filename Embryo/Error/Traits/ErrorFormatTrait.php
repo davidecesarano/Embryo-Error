@@ -31,7 +31,7 @@
 
                 while ($e = $error->getPrevious()) {
                     $html .= '<h2>Previous exception</h2>';
-                    $html .= $this->renderHtmlError($exception);
+                    $html .= $this->renderHtmlError($e);
                 }
 
             } else {
