@@ -11,7 +11,7 @@ It receives all uncaught PHP exceptions and converts them to a new HTTP response
 ## Install
 Using Composer:
 ```
-$ composer require davidecesarano/embryo-routing
+$ composer require davidecesarano/embryo-error
 ```
 ## Example
 You may quickly test this using the built-in PHP server going to http://localhost:8000.
