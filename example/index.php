@@ -6,7 +6,7 @@
     use Embryo\Error\Middleware\ErrorHandlerMiddleware;
     use Embryo\Http\Emitter\Emitter;
     use Embryo\Http\Factory\{ResponseFactory, ServerRequestFactory};
-    use Embryo\Http\Server\MiddlewareDispatcher;
+    use Embryo\Http\Server\RequestHandler;
     use Embryo\Log\StreamLogger;
     use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
     use Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface};
@@ -26,7 +26,7 @@
         }
     }
 
-    $middleware = new MiddlewareDispatcher([
+    $middleware = new RequestHandler([
         (new ErrorHandlerMiddleware)->setErrorHandler($errorHandler),
         new TestMiddleware
     ]);
