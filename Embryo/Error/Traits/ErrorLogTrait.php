@@ -23,12 +23,12 @@
          *
          * @param ServerRequestInterface $request
          * @param int $code
-         * @param Throwable $exception
+         * @param \Throwable $exception
          * @return void
          */
         protected function log(ServerRequestInterface $request, int $code, \Throwable $exception)
         {
-            $message = sprintf('[{code}] [{method}] [{path}] %s: %s in %s on line %d',
+            $message = sprintf('[{code}] [{method}] [{path}] [%s] [%s] [%s] [Line: %d]',
                 get_class($exception),
                 $exception->getMessage(),
                 $exception->getFile(),

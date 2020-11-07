@@ -57,28 +57,23 @@
          */
         protected function json(\Throwable $error): string
         {
-            $json = [
-                'result' => [
-                    'error' => [
-                        'message'   => 'Application Error',
-                        'exception' => []
-                    ]
-                ]
-            ];
+            $json = [];
+            $json['message'] = 'Application Error';
 
             if ($this->displayDetails) {
                 
-                $json['result']['error']['exception'][] = [
+                $json = [
+                    'message' => $error->getMessage(),
                     'type'    => get_class($error),
                     'code'    => $error->getCode(),
-                    'message' => $error->getMessage(),
                     'file'    => $error->getFile(),
                     'line'    => $error->getLine(),
-                    'trace'   => explode("\n", $error->getTraceAsString()),
+                    'trace'   => $error->getTrace()
                 ];
             }
 
-            return json_encode($json, JSON_PRETTY_PRINT);
+            $encode = json_encode($json, JSON_PRETTY_PRINT);
+            return $encode ? $encode : '';
         }
         
         /**
@@ -109,9 +104,9 @@
                 if ($this->displayDetails) {
 
                     $xml .= "<exception>\n";
+                        $xml .= "<message>".sprintf('<![CDATA[%s]]>', str_replace(']]>', ']]]]><![CDATA[>', $error->getMessage())) . "</message>\n";
                         $xml .= "<type>".get_class($error)."</type>\n";
                         $xml .= "<code>".$error->getCode()."</code>\n";
-                        $xml .= "<message>".sprintf('<![CDATA[%s]]>', str_replace(']]>', ']]]]><![CDATA[>', $error->getMessage())) . "</message>\n";
                         $xml .= "<file>".$error->getFile()."</file>\n";
                         $xml .= "<line>".$error->getLine()."</line>\n";
                         $xml .= "<trace>".sprintf('<![CDATA[%s]]>', str_replace(']]>', ']]]]><![CDATA[>', $error->getTraceAsString()))."</trace>\n";
@@ -131,9 +126,9 @@
         private function renderHtmlError(\Throwable $error): string
         {
             $html = '<h2>Details</h2>';
+            $html .= sprintf('<div><strong>Message:</strong> %s</div>', htmlentities($error->getMessage()));
             $html .= sprintf('<div><strong>Type:</strong> %s</div>', get_class($error));
             $html .= sprintf('<div><strong>Code:</strong> %s</div>', $error->getCode());
-            $html .= sprintf('<div><strong>Message:</strong> %s</div>', htmlentities($error->getMessage()));
             $html .= sprintf('<div><strong>File:</strong> %s</div>', $error->getFile());
             $html .= sprintf('<div><strong>Line:</strong> %s</div>', $error->getLine());
             $html .= '<h2>Trace</h2>';

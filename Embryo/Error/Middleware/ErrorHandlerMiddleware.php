@@ -12,12 +12,17 @@
 
     namespace Embryo\Error\Middleware;
     
-    use Embryo\Error\{ErrorHandler, ErrorHandlerException, ErrorHandlerInterface};
+    use Embryo\Error\{ErrorHandler, ErrorHandlerInterface};
     use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
     use Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface};
 
     class ErrorHandlerMiddleware implements MiddlewareInterface
     {   
+        /**
+         * @var ErrorHandlerInterface $errorHandler
+         */
+        private $errorHandler;
+
         /**
          * Set error handler.
          *
@@ -40,7 +45,6 @@
         public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface 
         {
             try {
-                set_error_handler([$this, 'phpErrorHandler']);
                 return $handler->handle($request);                
             } catch (\Throwable $exception) {
                 return $this->handleError($request, $exception);
@@ -50,24 +54,12 @@
         /**
          * Process the error.
          * 
-         * @param Throwable $exception
+         * @param ServerRequestInterface $request
+         * @param \Throwable $exception
          * @return ResponseInterface
          */
         private function handleError(ServerRequestInterface $request, \Throwable $exception): ResponseInterface
         {
             return $this->errorHandler->process($request, $exception);
-        }
-
-        /**
-         * PHP Error handler used for set_error_handler().
-         *
-         * @param int $code
-         * @param string $message
-         * @param string $file
-         * @param string $line
-         * @throws ErrorHandlerException
-         */
-        public function phpErrorHandler($code, $message, $file, $line){
-            throw new ErrorHandlerException($message, 500, $file, $line);
         }
     }
