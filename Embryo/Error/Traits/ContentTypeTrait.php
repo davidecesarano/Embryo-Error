@@ -16,7 +16,7 @@
     trait ContentTypeTrait 
     {
         /**
-         * @var array
+         * @var array $types
          */
         private $types = [
             'application/json',

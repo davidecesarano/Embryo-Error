@@ -70,6 +70,7 @@
          * @param ServerRequestInterface $request
          * @param \Throwable $exception
          * @return ResponseInterface
+         * @throws \UnexpectedValueException
          */
         public function process(ServerRequestInterface $request, \Throwable $exception): ResponseInterface
         {

@@ -14,5 +14,10 @@
 
     interface ErrorHandlerInterface
     {
+        /**
+         * @param ServerRequestInterface $request 
+         * @param \Throwable $exception
+         * @return ResponseInterface
+         */
         public function process(ServerRequestInterface $request, \Throwable $exception): ResponseInterface;
     }
