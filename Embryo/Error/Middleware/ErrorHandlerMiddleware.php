@@ -12,7 +12,8 @@
 
     namespace Embryo\Error\Middleware;
     
-    use Embryo\Error\{ErrorHandler, ErrorHandlerInterface};
+    use Embryo\Error\ErrorHandler;
+    use Embryo\Error\Interfaces\ErrorHandlerInterface;
     use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
     use Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface};
 

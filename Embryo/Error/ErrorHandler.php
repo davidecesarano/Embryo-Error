@@ -11,7 +11,7 @@
 
     namespace Embryo\Error;
 
-    use Embryo\Error\ErrorHandlerInterface;
+    use Embryo\Error\Interfaces\{ErrorHandlerInterface, ErrorRendererInterface};
     use Embryo\Error\Traits\{ContentTypeTrait, ErrorFormatTrait, ErrorLogTrait};
     use Embryo\Http\Factory\{ResponseFactory, StreamFactory};
     use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
@@ -39,6 +39,11 @@
         protected $logger;
 
         /**
+         * @var ErrorRendererInterface|null $renderer
+         */
+        protected $renderer = null;
+
+        /**
          * Set if display detalis error and write
          * error in log file.
          *
@@ -64,6 +69,18 @@
         }
 
         /**
+         * Set custom error renderer.
+         * 
+         * @param ErrorRendererInterface $renderer 
+         * @return self
+         */
+        public function setRenderer(ErrorRendererInterface $renderer = null): self 
+        {
+            $this->renderer = $renderer;
+            return $this;
+        }
+
+        /**
          * Process request and exception
          * and produce a response.
          *
@@ -76,9 +93,14 @@
         {
             $code        = ($exception->getCode() === 0) ? 500 : $exception->getCode();
             $contentType = $this->getContentType($request);
+            $response    = (new ResponseFactory)->createResponse($code);
 
             if ($this->logErrors) {
                 $this->log($request, $code, $exception);
+            }
+
+            if ($this->renderer) {
+                return $this->renderer->render($response);
             }
 
             switch ($contentType) {
@@ -97,7 +119,8 @@
             }
 
             $body = (new StreamFactory)->createStream($output);
-            $response = (new ResponseFactory)->createResponse($code);
-            return $response->withHeader('Content-type', $contentType)->withBody($body);
+            $response = $response->withHeader('Content-type', $contentType);
+            $response = $response->withBody($body);
+            return $response;
         }
     }

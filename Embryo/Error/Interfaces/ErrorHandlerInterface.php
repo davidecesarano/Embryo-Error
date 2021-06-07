@@ -7,10 +7,9 @@
      * @link   https://github.com/davidecesarano/embryo-error  
      */
 
-    namespace Embryo\Error;
+    namespace Embryo\Error\Interfaces;
 
-    use Psr\Http\Message\ServerRequestInterface;
-    use Psr\Http\Message\ResponseInterface;
+    use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
 
     interface ErrorHandlerInterface
     {
