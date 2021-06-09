@@ -50,7 +50,7 @@
          * @param boolean $displayDetails
          * @param boolean $logErrors
          */
-        public function __construct($displayDetails = true, $logErrors = true)
+        public function __construct(bool $displayDetails = true, bool $logErrors = true)
         {
             $this->displayDetails = $displayDetails;
             $this->logErrors      = $logErrors;
@@ -99,10 +99,6 @@
                 $this->log($request, $code, $exception);
             }
 
-            if ($this->renderer) {
-                return $this->renderer->render($response);
-            }
-
             switch ($contentType) {
                 case 'application/json':
                     $output = $this->json($exception);
@@ -121,6 +117,10 @@
             $body = (new StreamFactory)->createStream($output);
             $response = $response->withHeader('Content-type', $contentType);
             $response = $response->withBody($body);
+            
+            if ($this->renderer) {
+                return $this->renderer->render($response);
+            }
             return $response;
         }
     }
