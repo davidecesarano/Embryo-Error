@@ -11,6 +11,7 @@
 
     namespace Embryo\Error;
 
+    use \Throwable;
     use Embryo\Error\Interfaces\{ErrorHandlerInterface, ErrorRendererInterface};
     use Embryo\Error\Traits\{ContentTypeTrait, ErrorFormatTrait, ErrorLogTrait};
     use Embryo\Http\Factory\{ResponseFactory, StreamFactory};
@@ -85,11 +86,11 @@
          * and produce a response.
          *
          * @param ServerRequestInterface $request
-         * @param \Throwable $exception
+         * @param Throwable $exception
          * @return ResponseInterface
          * @throws \UnexpectedValueException
          */
-        public function process(ServerRequestInterface $request, \Throwable $exception): ResponseInterface
+        public function process(ServerRequestInterface $request, Throwable $exception): ResponseInterface
         {
             $code        = ($exception->getCode() === 0) ? 500 : $exception->getCode();
             $contentType = $this->getContentType($request);
@@ -119,7 +120,7 @@
             $response = $response->withBody($body);
             
             if ($this->renderer) {
-                return $this->renderer->render($response);
+                return $this->renderer->render($response, $exception);
             }
             return $response;
         }

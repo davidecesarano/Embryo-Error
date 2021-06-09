@@ -9,14 +9,15 @@
 
     namespace Embryo\Error\Interfaces;
 
+    use Throwable;
     use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
 
     interface ErrorHandlerInterface
     {
         /**
          * @param ServerRequestInterface $request 
-         * @param \Throwable $exception
+         * @param Throwable $exception
          * @return ResponseInterface
          */
-        public function process(ServerRequestInterface $request, \Throwable $exception): ResponseInterface;
+        public function process(ServerRequestInterface $request, Throwable $exception): ResponseInterface;
     }

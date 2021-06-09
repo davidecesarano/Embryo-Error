@@ -70,7 +70,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class CustomRenderer implements ErrorRendererInterface 
 {
-    public function render(ResponseInterface $response): ResponseInterface
+    public function render(ResponseInterface $response, \Throwable $exception): ResponseInterface
     {
         // custom logic...
         return $response;
