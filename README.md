@@ -61,16 +61,16 @@ The error handler includes detailed information on error diagnostics and saving 
 ### `setLogger(LoggerInterface $logger)`
 You must set a PSR logger if logErrors is set to true.
 
-### `setRenderer(ErrorRendererInterface $renderer = null)`
+### `setRenderer(ErrorRendererInterface $renderer = null, Throwable $exception)`
 You can set up a custom renderer for printing errors.
 
 ```php
 use Embryo\Error\Interfaces\ErrorRendererInterface;
-use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
 
 class CustomRenderer implements ErrorRendererInterface 
 {
-    public function render(ResponseInterface $response, \Throwable $exception): ResponseInterface
+    public function render(ServerRequestInterface $request, ResponseInterface $response, \Throwable $exception): ResponseInterface
     {
         // custom logic...
         return $response;

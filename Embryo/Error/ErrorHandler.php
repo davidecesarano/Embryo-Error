@@ -120,7 +120,7 @@
             $response = $response->withBody($body);
             
             if ($this->renderer) {
-                return $this->renderer->render($response, $exception);
+                return $this->renderer->render($request, $response, $exception);
             }
             return $response;
         }
